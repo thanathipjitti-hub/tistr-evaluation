@@ -420,7 +420,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby79hv7bVvR-j19o5w2kfcBi7CkDBdl1VGl8_shZf1YlFmCsCjMzi2hTw23dibunL02Ww/exec';
+const GAS_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -631,7 +631,7 @@ function exportCSV(){
 
 // ── SUMMARY ──
 async function refreshSummary(){
-  if(GAS_URL==='YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){toast('โหมดตัวอย่าง','err');return;}
+  if(GAS_URL==='https://script.google.com/macros/s/AKfycby79hv7bVvR-j19o5w2kfcBi7CkDBdl1VGl8_shZf1YlFmCsCjMzi2hTw23dibunL02Ww/exec'){toast('โหมดตัวอย่าง','err');return;}
   showLoading('รีเฟรช...');
   try{const[sc,rs]=await Promise.all([gasGet({action:'scores'}),gasGet({action:'resolutions'})]);S.scores=sc||[];S.resolutions=rs||[];loadSumTable();renderResList();toast('รีเฟรชสำเร็จ');}
   catch(e){toast('รีเฟรชไม่สำเร็จ','err');}finally{hideLoading();}
