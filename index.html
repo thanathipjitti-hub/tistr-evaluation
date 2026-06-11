@@ -420,7 +420,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyqrrB0x1IZn3ICdPz2opZQzb4cKPBhUgWt6ZFtmmIqnMcEd71YVvvgh6HLJE9GKHrxhw/exec';
+const GAS_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -431,7 +431,7 @@ let S = {
 // ── LOGIN ──
 function doLogin(){
   const code = document.getElementById('login-code').value.trim();
-  const ev = S.evaluators.find(e => String(e.pin) === String(code) || e.id === code);
+  const ev = S.evaluators.find(e => String(e.pin).trim() === String(code).trim() || e.id === code);
   if(ev){ S.currentEval=ev; S.isHR=false; enterApp(); }
   else { showErr('login-err'); }
 }
