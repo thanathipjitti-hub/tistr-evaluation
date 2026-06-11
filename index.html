@@ -431,7 +431,7 @@ let S = {
 // ── LOGIN ──
 function doLogin(){
   const code = document.getElementById('login-code').value.trim();
-  const ev = S.evaluators.find(e => e.pin === code || e.id === code);
+  const ev = S.evaluators.find(e => String(e.pin) === String(code) || e.id === code);
   if(ev){ S.currentEval=ev; S.isHR=false; enterApp(); }
   else { showErr('login-err'); }
 }
