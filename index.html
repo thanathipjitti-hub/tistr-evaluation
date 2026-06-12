@@ -817,9 +817,8 @@ function loadAppInfo(){
   if(!posId||!appId){wrap.innerHTML='';return;}
   const pos=getPos(posId),app=getApp(posId,appId);
   if(!pos||!app)return;
-  const summaryUrl=app.summaryUrl||app.summary_url||'';
-  const pdfUrl=app.pdfUrl||app.pdf_url||'';
-  const url=summaryUrl||pdfUrl;
+  // ใบสมัครรายคน ดึงจากคอลัมน์ D เท่านั้น
+  const url=app.pdfUrl||app.pdf_url||'';
   const embedUrl=toEmbedUrl(url);
   // scroll to detail
   setTimeout(()=>wrap.scrollIntoView({behavior:'smooth',block:'start'}),100);
