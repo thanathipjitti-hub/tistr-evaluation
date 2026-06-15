@@ -873,7 +873,7 @@ function loadOverview(){
   const myScores=S.scores.filter(s=>s.evaluatorId===evId);
   const allApps=S.positions.filter(p=>!posId||p.id===posId).flatMap(p=>p.applicants.map(a=>({...a,posId:p.id,posName:p.name,passScore:+(p.passScore||70)})));
   const scored=allApps.filter(a=>myScores.some(s=>s.applicantId===a.id&&(!posId||s.positionId===posId)));
-  const passed=scored.filter(a=>{const recs=myScores.filter(s=>s.applicantId===a.id);const avg=recs.reduce((x,r)=>x+r.total,0)/recs.length;return avg>=a.passScore;});
+  const passed=scored.filter(a=>{const recs=myScores.filter(s=>s.applicantId===a.id);const avg=recs.reduce((x,r)=>x+r.total,0)/recs.length;return avg>=+myPassScore(a.posId);});
   document.getElementById('overview-stats').innerHTML=`
     <div class="overview-stat"><div class="num">${allApps.length}</div><div class="lbl2">ผู้สมัครทั้งหมด</div></div>
     <div class="overview-stat"><div class="num" style="color:var(--blue)">${scored.length}</div><div class="lbl2">ได้รับการประเมิน</div></div>
@@ -887,7 +887,7 @@ function loadOverview(){
       if(!recs.length){rows.push(`<tr><td style="text-align:center">${rows.length+1}</td><td><strong>${esc(ap.name)}</strong></td><td><span class="tag tag-pos">${esc(pos.name)}</span></td><td colspan="4" style="color:var(--muted);font-size:12px">ยังไม่ได้ประเมิน</td><td>-</td><td style="font-size:12px;color:var(--muted)">${esc(evNames)}</td><td>-</td></tr>`);return;}
       const avgS=S.criteria.map((_,ci)=>Math.round(recs.reduce((a,r)=>a+(r.scores[ci]||0),0)/recs.length));
       const avgT=Math.round(recs.reduce((a,r)=>a+r.total,0)/recs.length);
-      const pass=avgT>=(+(pos.passScore||70));
+      const pass=avgT>=+myPassScore(pos.id);
       rows.push(`<tr><td style="text-align:center">${rows.length+1}</td><td><strong>${esc(ap.name)}</strong></td><td><span class="tag tag-pos">${esc(pos.name)}</span></td>${avgS.map(v=>`<td>${v}</td>`).join('')}<td><strong style="color:${pass?'var(--green)':'var(--red)'}">${avgT}</strong></td><td style="font-size:12px;color:var(--muted)">${esc(evNames)}</td><td><span class="${pass?'pass-tag':'fail-tag'}">${pass?'✓ ผ่าน':'✗ ไม่ผ่าน'}</span></td></tr>`);
     });
   });
