@@ -439,7 +439,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzYS_oG2PpkLAWGHA4PRbRKexFnhcV4vzeJGD9H4Kry2sek-NCZP9riMaLZQuAYKfXA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwHkOVoBaeLqqk-03tb7mnhobyTn1vnBDi-qcpSGd7EgHTc5EtcH_CNxlO-CZ6xb2vmgw/exec';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -866,11 +866,14 @@ function renderAllApplicants(){renderSummaryTable();}
 // ── OVERVIEW ──
 function loadOverview(){
   if(!S.currentEval)return;
+  const evId=myEvalId();
   const posId=document.getElementById('ov-pos')?.value||'';
   fillPos('ov-pos');if(posId&&document.getElementById('ov-pos'))document.getElementById('ov-pos').value=posId;
+  // กรองเฉพาะคะแนนของกรรมการที่ login อยู่
+  const myScores=S.scores.filter(s=>s.evaluatorId===evId);
   const allApps=S.positions.filter(p=>!posId||p.id===posId).flatMap(p=>p.applicants.map(a=>({...a,posId:p.id,posName:p.name,passScore:+(p.passScore||70)})));
-  const scored=allApps.filter(a=>S.scores.some(s=>s.applicantId===a.id&&(!posId||s.positionId===posId)));
-  const passed=scored.filter(a=>{const recs=S.scores.filter(s=>s.applicantId===a.id);const avg=recs.reduce((x,r)=>x+r.total,0)/recs.length;return avg>=a.passScore;});
+  const scored=allApps.filter(a=>myScores.some(s=>s.applicantId===a.id&&(!posId||s.positionId===posId)));
+  const passed=scored.filter(a=>{const recs=myScores.filter(s=>s.applicantId===a.id);const avg=recs.reduce((x,r)=>x+r.total,0)/recs.length;return avg>=a.passScore;});
   document.getElementById('overview-stats').innerHTML=`
     <div class="overview-stat"><div class="num">${allApps.length}</div><div class="lbl2">ผู้สมัครทั้งหมด</div></div>
     <div class="overview-stat"><div class="num" style="color:var(--blue)">${scored.length}</div><div class="lbl2">ได้รับการประเมิน</div></div>
@@ -879,8 +882,8 @@ function loadOverview(){
   const rows=[];
   S.positions.filter(p=>!posId||p.id===posId).forEach(pos=>{
     pos.applicants.forEach(ap=>{
-      const recs=S.scores.filter(s=>s.positionId===pos.id&&s.applicantId===ap.id);
-      const evNames=[...new Set(recs.map(r=>r.evaluator))].join(', ')||'-';
+      const recs=myScores.filter(s=>s.positionId===pos.id&&s.applicantId===ap.id);
+      const evNames=recs.length?S.currentEval.name:'-';
       if(!recs.length){rows.push(`<tr><td style="text-align:center">${rows.length+1}</td><td><strong>${esc(ap.name)}</strong></td><td><span class="tag tag-pos">${esc(pos.name)}</span></td><td colspan="4" style="color:var(--muted);font-size:12px">ยังไม่ได้ประเมิน</td><td>-</td><td style="font-size:12px;color:var(--muted)">${esc(evNames)}</td><td>-</td></tr>`);return;}
       const avgS=S.criteria.map((_,ci)=>Math.round(recs.reduce((a,r)=>a+(r.scores[ci]||0),0)/recs.length));
       const avgT=Math.round(recs.reduce((a,r)=>a+r.total,0)/recs.length);
