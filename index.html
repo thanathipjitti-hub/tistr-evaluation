@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 202606120949 -->
+<!-- build: 20260615021127 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -947,7 +947,7 @@ function downloadPDF(){
   updatePDFPreview();
   const ev=getEval(evId),pos=getPos(posId),content=document.getElementById('pdf-content').innerHTML;
   const html=`<!DOCTYPE html>
-<!-- build: 202606120949 --><html lang="th"><head><meta charset="UTF-8"><title>แบบประเมิน</title><style>@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');body{font-family:"Sarabun",sans-serif;padding:16px 24px;color:#000;font-size:11.5px}.pdf-h1{text-align:center;font-size:14px;font-weight:700;margin-bottom:3px}.pdf-h2{text-align:center;font-size:12px;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10px}th,td{border:1px solid #333;padding:3px 4px;text-align:center;vertical-align:middle}th{background:#dde3f0;font-weight:700}td:nth-child(2){text-align:left}.pdf-signs{display:flex;gap:20px;margin-top:14px;justify-content:flex-end}.pdf-sign-box{text-align:center;min-width:220px}.sign-line{font-size:11px;line-height:2}@media print{@page{size:A4 landscape;margin:12mm}}</style></head><body>${content}<script>window.onload=()=>setTimeout(()=>window.print(),500)<\/script></body></html>`;
+<!-- build: 20260615021127 --><html lang="th"><head><meta charset="UTF-8"><title>แบบประเมิน</title><style>@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');body{font-family:"Sarabun",sans-serif;padding:16px 24px;color:#000;font-size:11.5px}.pdf-h1{text-align:center;font-size:14px;font-weight:700;margin-bottom:3px}.pdf-h2{text-align:center;font-size:12px;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10px}th,td{border:1px solid #333;padding:3px 4px;text-align:center;vertical-align:middle}th{background:#dde3f0;font-weight:700}td:nth-child(2){text-align:left}.pdf-signs{display:flex;gap:20px;margin-top:14px;justify-content:flex-end}.pdf-sign-box{text-align:center;min-width:220px}.sign-line{font-size:11px;line-height:2}@media print{@page{size:A4 landscape;margin:12mm}}</style></head><body>${content}<script>window.onload=()=>setTimeout(()=>window.print(),500)<\/script></body></html>`;
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
   a.download='แบบประเมิน_'+(pos?.name||posId).replace(/\s+/g,'_')+'_'+(ev?.name||evId).replace(/\s+/g,'_')+'.html';
   a.click();toast('ดาวน์โหลดสำเร็จ');
