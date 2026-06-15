@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- build: 202606120949 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -438,7 +439,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxIcz4SKmojasG_M9ztquAwusG1dqWMbhhu11ENy9cG21RUAEcENaDvumQBTcTphJkO5Q/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzYS_oG2PpkLAWGHA4PRbRKexFnhcV4vzeJGD9H4Kry2sek-NCZP9riMaLZQuAYKfXA/exec';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -855,7 +856,7 @@ function loadAppInfo(){
           </iframe>
         </div>`
       :`<div style="margin-top:14px;padding:16px;background:var(--bg);border-radius:8px;text-align:center;color:var(--muted);font-size:13px">
-          📋 ยังไม่มีไฟล์ประวัติ — HR เพิ่ม URL ใน Sheet 📋 ผู้สมัคร คอลัมน์ E
+          📋 ยังไม่มีใบสมัคร — HR เพิ่ม URL ใน Sheet 📋 ผู้สมัคร คอลัมน์ D
         </div>`}
   </div>`;
 }
@@ -942,7 +943,8 @@ function downloadPDF(){
   if(!evId||!posId){toast('เลือกกรรมการและตำแหน่งก่อน','err');return;}
   updatePDFPreview();
   const ev=getEval(evId),pos=getPos(posId),content=document.getElementById('pdf-content').innerHTML;
-  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>แบบประเมิน</title><style>@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');body{font-family:"Sarabun",sans-serif;padding:16px 24px;color:#000;font-size:11.5px}.pdf-h1{text-align:center;font-size:14px;font-weight:700;margin-bottom:3px}.pdf-h2{text-align:center;font-size:12px;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10px}th,td{border:1px solid #333;padding:3px 4px;text-align:center;vertical-align:middle}th{background:#dde3f0;font-weight:700}td:nth-child(2){text-align:left}.pdf-signs{display:flex;gap:20px;margin-top:14px;justify-content:flex-end}.pdf-sign-box{text-align:center;min-width:220px}.sign-line{font-size:11px;line-height:2}@media print{@page{size:A4 landscape;margin:12mm}}</style></head><body>${content}<script>window.onload=()=>setTimeout(()=>window.print(),500)<\/script></body></html>`;
+  const html=`<!DOCTYPE html>
+<!-- build: 202606120949 --><html lang="th"><head><meta charset="UTF-8"><title>แบบประเมิน</title><style>@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');body{font-family:"Sarabun",sans-serif;padding:16px 24px;color:#000;font-size:11.5px}.pdf-h1{text-align:center;font-size:14px;font-weight:700;margin-bottom:3px}.pdf-h2{text-align:center;font-size:12px;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10px}th,td{border:1px solid #333;padding:3px 4px;text-align:center;vertical-align:middle}th{background:#dde3f0;font-weight:700}td:nth-child(2){text-align:left}.pdf-signs{display:flex;gap:20px;margin-top:14px;justify-content:flex-end}.pdf-sign-box{text-align:center;min-width:220px}.sign-line{font-size:11px;line-height:2}@media print{@page{size:A4 landscape;margin:12mm}}</style></head><body>${content}<script>window.onload=()=>setTimeout(()=>window.print(),500)<\/script></body></html>`;
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
   a.download='แบบประเมิน_'+(pos?.name||posId).replace(/\s+/g,'_')+'_'+(ev?.name||evId).replace(/\s+/g,'_')+'.html';
   a.click();toast('ดาวน์โหลดสำเร็จ');
