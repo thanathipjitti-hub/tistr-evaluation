@@ -439,7 +439,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwHkOVoBaeLqqk-03tb7mnhobyTn1vnBDi-qcpSGd7EgHTc5EtcH_CNxlO-CZ6xb2vmgw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyyWMUQNQUA0NxodFhTPvnKBtzTc2qqg76haD-kF6lR-IocUTgnd_oCJjmTP1gLqjpP5A/exec';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -533,7 +533,7 @@ function getPos(id){return S.positions.find(p=>p.id===id)}
 function getEval(id){return S.evaluators.find(e=>e.id===id)}
 function getApp(posId,appId){const p=getPos(posId);return p&&p.applicants.find(a=>a.id===appId)}
 function myEvalId(){return S.currentEval?.id||''}
-function myPassScore(posId){const p=getPos(posId);const v=p?.passScore||S.config?.passScore||70;return isNaN(+v)?70:Math.max(1,+v);}
+function myPassScore(posId){const p=getPos(posId);const v=+(p?.passScore)||+(S.config?.passScore)||70;return isNaN(v)||v<1?70:v;}
 function fillPos(id){const el=document.getElementById(id);if(!el)return;const v=el.value;el.innerHTML='<option value="">— เลือกตำแหน่ง —</option>';S.positions.forEach(p=>el.innerHTML+=`<option value="${p.id}"${p.id===v?' selected':''}>${esc(p.name)}</option>`);if(v)el.value=v;}
 function fillEvals(id){const el=document.getElementById(id);if(!el)return;const v=el.value;el.innerHTML='<option value="">— เลือกกรรมการ —</option>';S.evaluators.forEach(e=>el.innerHTML+=`<option value="${e.id}"${e.id===v?' selected':''}>${esc(e.name)}</option>`);if(v)el.value=v;}
 function fillApps(posId,selId){const el=document.getElementById(selId);if(!el)return;el.innerHTML='<option value="">— เลือกผู้สมัคร —</option>';const pos=getPos(posId);if(pos)pos.applicants.forEach(a=>el.innerHTML+=`<option value="${a.id}">${esc(a.name)}</option>`);}
