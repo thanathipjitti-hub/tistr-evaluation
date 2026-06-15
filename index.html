@@ -439,7 +439,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyyWMUQNQUA0NxodFhTPvnKBtzTc2qqg76haD-kF6lR-IocUTgnd_oCJjmTP1gLqjpP5A/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0I_pIwNvqkRBlslkifKJSJ0swKQ5EsPqnWKOFfAxPxfzNXgZc2mDC4pxRmF8bOs55eQ/exec';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -869,6 +869,14 @@ function loadOverview(){
   const evId=myEvalId();
   const posId=document.getElementById('ov-pos')?.value||'';
   fillPos('ov-pos');if(posId&&document.getElementById('ov-pos'))document.getElementById('ov-pos').value=posId;
+
+  // ถ้ายังไม่เลือกตำแหน่ง ให้แสดงข้อความให้เลือกก่อน
+  if(!posId){
+    document.getElementById('overview-stats').innerHTML='';
+    document.getElementById('overview-tbody').innerHTML=`<tr><td colspan="10" class="empty" style="padding:40px"><div class="empty-icon">📊</div>กรุณาเลือกตำแหน่งเพื่อดูภาพรวมผลการประเมิน</td></tr>`;
+    return;
+  }
+
   // กรองเฉพาะคะแนนของกรรมการที่ login อยู่
   const myScores=S.scores.filter(s=>s.evaluatorId===evId);
   const allApps=S.positions.filter(p=>!posId||p.id===posId).flatMap(p=>p.applicants.map(a=>({...a,posId:p.id,posName:p.name,passScore:+(p.passScore||70)})));
@@ -960,7 +968,7 @@ function switchTab(tab){
   const navEl=document.getElementById('tab-'+tab);if(navEl)navEl.classList.add('active');
   const pageEl=document.getElementById('page-'+tab);if(pageEl)pageEl.classList.add('active');
   if(tab==='summary'){fillPos('s2-pos');loadSumTable();renderResList();}
-  if(tab==='overview')loadOverview();
+  if(tab==='overview'){fillPos('ov-pos');loadOverview();}
   if(tab==='appinfo'){
     fillPos('ai-pos');
     // fill summary dropdown and auto-select first position
