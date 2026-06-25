@@ -439,7 +439,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJizr81qgVxdKTkV8A0s9Qry9pPsAeYpAbqioX9TlNjSz-pq8onX6CDmsdYbBLoQy9/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby1SqnBvgTbZthcV-FVIIJyYsLg20nGWgKDRO3KutTswEsd2zPd-epTU2chezwqEJjZ/exec';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -735,7 +735,7 @@ function renderSummaryPDF(){
           style="background:var(--blue);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600">
           ⬡ เปิดแบบเต็มจอ
         </a>
-        <a href="${esc(summaryUrl)}" download
+        <a href="${esc(summaryUrl)}" target="_blank"
           style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600">
           ⬇ ดาวน์โหลด
         </a>
@@ -847,7 +847,7 @@ function loadAppInfo(){
                 style="background:var(--blue);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:5px">
                 ⬡ เปิดแบบเต็มจอ
               </a>
-              <a href="${esc(url)}" download
+              <a href="${esc(url)}" target="_blank"
                 style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:5px">
                 ⬇ ดาวน์โหลด
               </a>
