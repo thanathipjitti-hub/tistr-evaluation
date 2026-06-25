@@ -439,7 +439,7 @@ textarea:focus{border-color:var(--blue)}
 <div id="toast"><span id="toast-msg"></span></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycby1SqnBvgTbZthcV-FVIIJyYsLg20nGWgKDRO3KutTswEsd2zPd-epTU2chezwqEJjZ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwd2MnX5Dpxc68uIFYWKyaJQzZIn8otJOsxAL_q4qXX/dev';
 const HR_PASSWORD = 'HR2569';
 
 let S = {
@@ -709,6 +709,26 @@ function toEmbedUrl(url){
   return id?'https://drive.google.com/file/d/'+id+'/preview':url;
 }
 
+// แปลง Google Drive URL → download URL (โหลดตรงได้เลย)
+function toDownloadUrl(url){
+  if(!url)return'';
+  const m1=url.match(/\/file\/d\/([^\/\?]+)/);
+  const m2=url.match(/[?&]id=([^&]+)/);
+  const id=m1?m1[1]:m2?m2[1]:'';
+  return id?'https://drive.google.com/uc?export=download&id='+id:url;
+}
+
+// ดาวน์โหลด PDF โดยตรง
+function downloadFile(url, filename){
+  if(!url){toast('ไม่มีไฟล์ให้ดาวน์โหลด','err');return;}
+  const dlUrl=toDownloadUrl(url);
+  const a=document.createElement('a');
+  a.href=dlUrl;
+  a.download=filename||'เอกสาร.pdf';
+  a.target='_blank';
+  a.click();
+}
+
 // แสดงตารางประวัติโดยย่อทุกคน (ส่วนบน)
 // แสดง PDF ภาพรวมผู้สมัครทั้งหมด (ส่วนบน)
 function renderSummaryPDF(){
@@ -735,10 +755,10 @@ function renderSummaryPDF(){
           style="background:var(--blue);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600">
           ⬡ เปิดแบบเต็มจอ
         </a>
-        <a href="${esc(summaryUrl)}" target="_blank"
-          style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600">
-          ⬇ ดาวน์โหลด
-        </a>
+        <button onclick="downloadFile('${esc(summaryUrl)}','สรุปข้อมูลผู้สมัคร_${esc(pos.name)}.pdf')"
+          style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:Sarabun,sans-serif">
+          ⬇ ดาวน์โหลด PDF
+        </button>
       </div>
     </div>
     <iframe src="${esc(embedUrl)}"
@@ -802,7 +822,10 @@ function showPDFModal(url,name){
   document.getElementById('modal-title').textContent='📄 ประวัติโดยย่อ — '+name;
   document.getElementById('modal-body').innerHTML=`
     <div style="margin-bottom:10px;display:flex;justify-content:flex-end">
-      <a href="${esc(url)}" target="_blank" style="background:var(--blue);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600">⬡ เปิดแบบเต็มจอ</a>
+      <div style="display:flex;gap:8px">
+        <a href="${esc(url)}" target="_blank" style="background:var(--blue);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600">⬡ เปิดแบบเต็มจอ</a>
+        <button onclick="downloadFile('${esc(url)}','ประวัติโดยย่อ.pdf')" style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:Sarabun,sans-serif">⬇ ดาวน์โหลด PDF</button>
+      </div>
     </div>
     <iframe src="${esc(embedUrl)}" style="width:100%;height:65vh;border:1px solid var(--border);border-radius:8px" allow="autoplay" title="${esc(name)}"></iframe>`;
   overlay.classList.add('open');
@@ -847,10 +870,10 @@ function loadAppInfo(){
                 style="background:var(--blue);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:5px">
                 ⬡ เปิดแบบเต็มจอ
               </a>
-              <a href="${esc(url)}" target="_blank"
-                style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:5px">
-                ⬇ ดาวน์โหลด
-              </a>
+              <button onclick="downloadFile('${esc(url)}','ใบสมัคร_${esc(app.name)}.pdf')"
+                style="background:var(--green);color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:Sarabun,sans-serif;display:inline-flex;align-items:center;gap:5px">
+                ⬇ ดาวน์โหลด PDF
+              </button>
             </div>
           </div>
           <iframe src="${esc(embedUrl)}"
