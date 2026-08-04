@@ -699,7 +699,7 @@ function enterApp(){
   createStars('welcome-stars',140);
   const ws=document.getElementById('welcome-screen');
   const wu=document.getElementById('welcome-user');
-  if(wu)wu.textContent=S.isHR?'🛡 ยินดีต้อนรับ HR Admin':'👤 ยินดีต้อนรับ '+(S.currentEval.title||S.currentEval.name);
+  if(wu)wu.textContent=S.isHR?'🛡 ยินดีต้อนรับ HR Admin':'👤 ยินดีต้อนรับ '+(S.currentEval.title||S.currentEval.name)+' ('+S.currentEval.name+')';
   document.getElementById('login-screen').style.display='none';
   if(ws)ws.style.display='flex';
   setTimeout(()=>{
@@ -837,7 +837,7 @@ function buildCritCards(){
         <div class="crit-badge">เต็ม ${cr.max}</div>
       </div>
       <div class="score-wrap">
-        <input type="number" class="score-inp" id="c${i}" min="0" max="${cr.max}" placeholder="0" oninput="calcTotal()">
+        <input type="number" class="score-inp" id="c${i}" min="0" max="${cr.max}" placeholder="0" oninput="limitScore(this,${cr.max});calcTotal()">
         <span style="color:var(--muted);font-size:15px">/</span>
         <span style="font-size:13px;font-weight:600;color:var(--muted)">${cr.max}</span>
       </div>
@@ -854,6 +854,13 @@ function onAppChange(){
   else resetScores();
 }
 function resetScores(){S.criteria.forEach((_,i)=>{const el=document.getElementById('c'+i);if(el)el.value='';});document.getElementById('s1-note').value='';calcTotal();}
+function limitScore(el,max){
+  let v=parseInt(el.value)||0;
+  if(v>max){el.value=max;el.style.borderColor='var(--red)';el.style.boxShadow='0 0 0 3px rgba(192,57,43,.15)';
+    setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},1200);}
+  else if(v<0){el.value=0;}
+  else{el.style.borderColor='';el.style.boxShadow='';}
+}
 function calcTotal(){
   const passScore=+myPassScore(document.getElementById('s1-pos').value)||70;
   let t=0;S.criteria.forEach((cr,i)=>t+=Math.min(cr.max,Math.max(0,+document.getElementById('c'+i).value||0)));
