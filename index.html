@@ -699,7 +699,7 @@ function enterApp(){
   createStars('welcome-stars',140);
   const ws=document.getElementById('welcome-screen');
   const wu=document.getElementById('welcome-user');
-  if(wu)wu.textContent='👤 ยินดีต้อนรับ คุณ'+S.currentEval.name+(S.isHR?' (HR Admin)':'');
+  if(wu)wu.textContent=S.isHR?'🛡 ยินดีต้อนรับ HR Admin':'👤 ยินดีต้อนรับ '+(S.currentEval.title||S.currentEval.name);
   document.getElementById('login-screen').style.display='none';
   if(ws)ws.style.display='flex';
   setTimeout(()=>{
@@ -729,8 +729,41 @@ function doLogout(){
 }
 
 // ── API ──
-async function gasGet(p){ const r=await fetch(GAS_URL+'?'+new URLSearchParams(p)); if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); }
-async function gasPost(b){ const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify(b)}); if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); }
+// API with timeout + retry
+async function fetchWithTimeout(url, options={}, timeoutMs=15000){
+  const ctrl=new AbortController();
+  const tid=setTimeout(()=>ctrl.abort(),timeoutMs);
+  try{
+    const r=await fetch(url,{...options,signal:ctrl.signal});
+    clearTimeout(tid);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r;
+  }catch(e){clearTimeout(tid);throw e;}
+}
+
+async function gasGet(p,retry=2){
+  for(let i=0;i<=retry;i++){
+    try{
+      const r=await fetchWithTimeout(GAS_URL+'?'+new URLSearchParams(p));
+      return r.json();
+    }catch(e){
+      if(i===retry)throw e;
+      await new Promise(r=>setTimeout(r,1500)); // รอ 1.5 วิแล้วลองใหม่
+    }
+  }
+}
+
+async function gasPost(b,retry=2){
+  for(let i=0;i<=retry;i++){
+    try{
+      const r=await fetchWithTimeout(GAS_URL,{method:'POST',body:JSON.stringify(b)});
+      return r.json();
+    }catch(e){
+      if(i===retry)throw e;
+      await new Promise(r=>setTimeout(r,1500));
+    }
+  }
+}
 
 // ── INIT ──
 async function init(){
@@ -738,7 +771,7 @@ async function init(){
   await loadAll();
 }
 async function loadAll(){
-  showLoading('กำลังโหลดข้อมูล...');
+  showLoading('กำลังเชื่อมต่อ Google Sheet... (อาจใช้เวลา 5-10 วินาที)');
   try{
     const d=await gasGet({action:'all'});
     S.config=d.config||{}; S.evaluators=d.evaluators||[]; S.positions=d.positions||[];
@@ -845,10 +878,18 @@ async function saveScore(){
   if(idx>=0)S.scores[idx]=rec;else S.scores.push(rec);
   renderMyRecords();
   if(GAS_URL!=='YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
-    const btn=document.getElementById('btn-save');btn.disabled=true;btn.textContent='⏳ บันทึก...';
-    try{await gasPost({action:'saveScore',...rec});toast('💾 บันทึก '+app?.name+' สำเร็จ');}
-    catch(e){toast('บันทึกไม่สำเร็จ','err');}
-    finally{btn.disabled=false;btn.textContent='💾 บันทึกคะแนน';}
+    const btn=document.getElementById('btn-save');
+    btn.disabled=true;btn.textContent='⏳ กำลังบันทึก...';
+    try{
+      await gasPost({action:'saveScore',...rec});
+      toast('💾 บันทึก '+( app?.name||appId)+' สำเร็จ');
+    }catch(e){
+      toast('⚠️ บันทึกไม่สำเร็จ กรุณาลองใหม่','err');
+    }finally{
+      // รีเซ็ตปุ่มเสมอ ไม่ว่าจะสำเร็จหรือไม่
+      btn.disabled=false;
+      btn.textContent='💾 บันทึกคะแนน';
+    }
   }else toast('💾 บันทึก (โหมดตัวอย่าง)');
 }
 async function deleteScore(id){
@@ -934,9 +975,11 @@ async function saveResolution(){
   const idx=S.resolutions.findIndex(r=>r.id===id);if(idx>=0)S.resolutions[idx]=rec;else S.resolutions.push(rec);
   renderResList();
   if(GAS_URL!=='YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
-    const btn=document.getElementById('btn-save-res');btn.disabled=true;btn.textContent='⏳...';
+    const btn=document.getElementById('btn-save-res');
+    btn.disabled=true;btn.textContent='⏳ กำลังบันทึก...';
     try{await gasPost({action:'saveResolution',...rec});toast('💾 บันทึกมติสำเร็จ');}
-    catch(e){toast('บันทึกไม่สำเร็จ','err');}finally{btn.disabled=false;btn.textContent='💾 บันทึกมติ';}
+    catch(e){toast('⚠️ บันทึกไม่สำเร็จ กรุณาลองใหม่','err');}
+    finally{btn.disabled=false;btn.textContent='💾 บันทึกมติ';}
   }else toast('💾 บันทึกมติ (โหมดตัวอย่าง)');
 }
 async function deleteResolution(id){
